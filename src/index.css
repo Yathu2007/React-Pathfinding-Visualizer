@@ -4,6 +4,14 @@
 
 @layer components {
     .sidebar-icon {
-        @apply relative flex items-center justify-center w-12 h-12 mx-auto my-auto rounded-3xl hover:rounded-2xl shadow-lg hover:shadow-2xl bg-gray-800 text-green-400 hover:bg-green-400 hover:text-white transition-all duration-300 ease-linear;
+        @apply relative flex items-center justify-center w-12 h-12 mx-auto my-2 rounded-3xl hover:rounded-2xl shadow-lg hover:shadow-2xl bg-gray-700 text-white hover:bg-secondary hover:text-white transition-all duration-300 ease-linear active:translate-y-1.5;
+    }
+
+    .sidebar-tooltip {
+        @apply absolute left-16 py-1.5 px-2.5 w-auto min-w-max min-h-max rounded-md shadow-2xl font-bold text-sm font-sans bg-gray-900 scale-0 origin-left;
+    }
+
+    .separator {
+        @apply h-0.5 w-8 m-2 rounded-sm bg-gray-500;
     }
 }
