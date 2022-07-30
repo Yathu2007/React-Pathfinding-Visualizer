@@ -12,6 +12,10 @@
     }
 
     .separator {
-        @apply h-0.5 w-8 m-2 rounded-sm bg-gray-500;
+        @apply h-0.5 w-8 m-3 rounded-sm bg-gray-500;
+    }
+
+    .node {
+        @apply w-7 h-7 border-solid border-2 border-gray-200 p-0;
     }
 }

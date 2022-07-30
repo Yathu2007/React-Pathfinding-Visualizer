@@ -30,12 +30,18 @@ const SideBar = () => {
 
             <div className="separator"></div>
 
-            <SideBarIcon
-                icon={!darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
-                tooltip="theme"
-                click={() => setTheme(!darkMode)}
-            />
-            <SideBarIcon icon={<FaCog size={20} />} tooltip="settings" />
+            <div className="absolute bottom-4">
+                <div className="separator"></div>
+
+                <SideBarIcon
+                    icon={
+                        !darkMode ? <FaSun size={20} /> : <FaMoon size={20} />
+                    }
+                    tooltip="theme"
+                    click={() => setTheme(!darkMode)}
+                />
+                <SideBarIcon icon={<FaCog size={20} />} tooltip="settings" />
+            </div>
         </div>
     );
 };
