@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
+import useDarkMode from "../hooks/useDarkMode";
 
 import { BsFillLightningChargeFill, BsCpuFill } from "react-icons/bs";
 import { TbBarrierBlock } from "react-icons/tb";
 import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
 const SideBar = () => {
-    const [darkMode, setTheme] = useState(true);
+    const [oppositeTheme, setTheme] = useDarkMode();
 
     return (
         // top part
-        <div className="fixed top-0 left-0 h-screen w-16 flex flex-col text-white m-0  bg-primary drop-shadow-xl items-center">
+        <div className="fixed top-0 left-0 h-screen w-16 flex flex-col text-white m-0 bg-slate-100  dark:bg-primary drop-shadow-xl items-center">
             <div className="flex justify-start">
                 <SideBarIcon
                     icon={<BsFillLightningChargeFill size={25} />}
@@ -35,10 +36,14 @@ const SideBar = () => {
 
                 <SideBarIcon
                     icon={
-                        !darkMode ? <FaSun size={20} /> : <FaMoon size={20} />
+                        oppositeTheme === "light" ? (
+                            <FaSun size={20} />
+                        ) : (
+                            <FaMoon size={20} />
+                        )
                     }
                     tooltip="theme"
-                    click={() => setTheme(!darkMode)}
+                    click={() => setTheme(oppositeTheme)}
                 />
                 <SideBarIcon icon={<FaCog size={20} />} tooltip="settings" />
             </div>
