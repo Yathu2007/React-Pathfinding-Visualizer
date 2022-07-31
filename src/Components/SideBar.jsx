@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import useDarkMode from "../hooks/useDarkMode";
 
 import { BsFillLightningChargeFill, BsCpuFill } from "react-icons/bs";
@@ -7,6 +7,11 @@ import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
 const SideBar = () => {
     const [oppositeTheme, setTheme] = useDarkMode();
+    const [algorithm, setAlgorithm] = useState(null);
+
+    const handleAlgoChange = (newValue) => {
+        setAlgorithm(newValue);
+    };
 
     return (
         // top part
@@ -26,7 +31,7 @@ const SideBar = () => {
                 id="algo"
                 icon={<BsCpuFill size={25} />}
                 tooltip="algorithm"
-                click={() => HandleClick("algo")}
+                click={() => HandleClick("algo", handleAlgoChange)}
                 options={[
                     "A* algorithm",
                     "Dijkstra's algorithm",
@@ -93,33 +98,24 @@ const Dropdown = ({ id, options }) => {
     );
 };
 
-const HandleClick = (id) => {
+const HandleClick = (id, func) => {
     const dropdown = window.document.getElementById(id).lastChild;
     dropdown.classList.toggle("scale-100");
 
     window.onclick = function (e) {
-        if (!e.target.matches(".dropdown-menu") && !(e.target.id === id)) {
+        const cid = e.target.id; // clicked id
+
+        if (!e.target.matches(".dropdown-menu") && !(cid === id)) {
             if (dropdown.classList.contains("scale-100")) {
                 dropdown.classList.remove("scale-100");
                 window.onclick = () => {};
             }
         }
-        console.log(e.target.id);
+
+        if (cid.includes(id) && cid !== id) {
+            func(cid[cid.length - 1]);
+        }
     };
 };
-
-// class NavBar extends React.Component {
-//     constructor(props) {
-//         super(props);
-
-//         this.state = {
-//             algorithm: null,
-//         };
-//     }
-
-//     render() {
-//         return ();
-//     }
-// }
 
 export default SideBar;
