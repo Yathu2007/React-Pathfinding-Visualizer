@@ -4,11 +4,12 @@
 
 @layer components {
     .sidebar-icon {
-        @apply relative flex items-center justify-center w-12 h-12 mx-auto my-2 rounded-3xl hover:rounded-2xl shadow-lg hover:shadow-2xl bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-white hover:bg-secondary hover:text-white transition-all duration-100 ease-out active:translate-y-1;
+        @apply relative flex items-center justify-center w-12 h-12 mx-auto my-2 rounded-3xl hover:rounded-2xl shadow-lg hover:shadow-2xl bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-white  hover:bg-secondary dark:hover:bg-secondary hover:text-white transition-all duration-100 ease-out active:translate-y-0.5;
     }
 
-    .sidebar-tooltip {
-        @apply absolute left-16 py-1.5 px-2.5 w-auto min-w-max min-h-max rounded-md shadow-2xl font-bold text-sm font-sans bg-slate-50 dark:bg-gray-900 text-gray-900 dark:text-white scale-0 origin-left;
+    .sidebar-tooltip,
+    .dropdown-menu {
+        @apply absolute left-16 p-2.5 w-auto min-w-max min-h-max rounded-md shadow-2xl font-bold text-sm font-sans bg-slate-50 dark:bg-gray-900 text-gray-900 dark:text-white scale-0 origin-left transition-all;
     }
 
     .separator {
@@ -16,6 +17,14 @@
     }
 
     .node {
-        @apply w-7 h-7 border-solid border-2 border-gray-200 dark:border-gray-600 p-0;
+        @apply w-7 h-7 border-solid border-2 border-gray-200 dark:border-gray-600 p-1 align-middle items-center;
+    }
+
+    .dropdown-menu li {
+        @apply text-left p-2 rounded-md hover:bg-secondary dark:hover:bg-secondary hover:text-white;
+    }
+
+    svg {
+        pointer-events: none;
     }
 }

@@ -4,7 +4,7 @@ import Board from "./Components/Board";
 function App() {
     return (
         <div className="App">
-            <div className="flex h-screen w-screen dark:bg-gray-800 transition-all ease-linear">
+            <div className="flex min-h-screen max-h-max dark:bg-gray-800">
                 <Board />
                 <SideBar />
             </div>

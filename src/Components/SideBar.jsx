@@ -22,7 +22,18 @@ const SideBar = () => {
 
             <SideBarIcon icon={<FaPlay size={20} />} tooltip="play animation" />
 
-            <SideBarIcon icon={<BsCpuFill size={25} />} tooltip="algorithm" />
+            <SideBarIcon
+                id="algo"
+                icon={<BsCpuFill size={25} />}
+                tooltip="algorithm"
+                click={() => HandleClick("algo")}
+                options={[
+                    "A* algorithm",
+                    "Dijkstra's algorithm",
+                    "Depth First Search",
+                    "Breadth First Search",
+                ]}
+            />
 
             <SideBarIcon
                 icon={<TbBarrierBlock size={25} />}
@@ -31,7 +42,7 @@ const SideBar = () => {
 
             <div className="separator"></div>
 
-            <div className="absolute bottom-4">
+            <div className="absolute bottom-1">
                 <div className="separator"></div>
 
                 <SideBarIcon
@@ -51,15 +62,64 @@ const SideBar = () => {
     );
 };
 
-const SideBarIcon = ({ icon, tooltip, click }) => {
+const SideBarIcon = ({ id = "", icon, tooltip, click, options = [] }) => {
     return (
-        <button className="sidebar-icon group" onClick={() => click()}>
+        <button id={id} className="sidebar-icon group" onClick={() => click()}>
             {icon}
             <span className="sidebar-tooltip group-hover:scale-100 transition-all group-active:scale-0">
                 {tooltip}
             </span>
+            {options.length !== 0 ? <Dropdown id={id} options={options} /> : ""}
         </button>
     );
 };
+
+const Dropdown = ({ id, options }) => {
+    const option_list = [];
+
+    for (let i = 0; i < options.length; i++) {
+        const key = id + "-" + i;
+        option_list.push(
+            <li key={key} id={key}>
+                {options[i]}
+            </li>
+        );
+    }
+
+    return (
+        <div className="dropdown-menu">
+            <ul>{option_list}</ul>
+        </div>
+    );
+};
+
+const HandleClick = (id) => {
+    const dropdown = window.document.getElementById(id).lastChild;
+    dropdown.classList.toggle("scale-100");
+
+    window.onclick = function (e) {
+        if (!e.target.matches(".dropdown-menu") && !(e.target.id === id)) {
+            if (dropdown.classList.contains("scale-100")) {
+                dropdown.classList.remove("scale-100");
+                window.onclick = () => {};
+            }
+        }
+        console.log(e.target.id);
+    };
+};
+
+// class NavBar extends React.Component {
+//     constructor(props) {
+//         super(props);
+
+//         this.state = {
+//             algorithm: null,
+//         };
+//     }
+
+//     render() {
+//         return ();
+//     }
+// }
 
 export default SideBar;

@@ -1,3 +1,6 @@
+import { BsFlagFill } from "react-icons/bs";
+import { FaFlagCheckered } from "react-icons/fa";
+
 const Board = () => {
     const board = [];
 
@@ -5,7 +8,29 @@ const Board = () => {
         const row = [];
 
         for (let j = 0; j < 64; j++) {
-            row.push(<td key={`${i}-${j}`} className="node"></td>);
+            const k =
+                i === 15 && j === 15 ? 1 : i === 15 && j === 47 ? 0 : null;
+
+            row.push(
+                <td
+                    key={`${i}-${j}`}
+                    className={
+                        k === 1
+                            ? "node text-green-600"
+                            : k === 0
+                            ? "node text-red-600"
+                            : "node"
+                    }
+                >
+                    {k === 1 ? (
+                        <BsFlagFill />
+                    ) : k === 0 ? (
+                        <FaFlagCheckered />
+                    ) : (
+                        ""
+                    )}
+                </td>
+            );
         }
 
         board.push(<tr key={i}>{row}</tr>);
