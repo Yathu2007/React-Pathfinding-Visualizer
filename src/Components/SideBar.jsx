@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import useDarkMode from "../hooks/useDarkMode";
 
-import { BsFillLightningChargeFill, BsCpuFill } from "react-icons/bs";
-import { TbBarrierBlock } from "react-icons/tb";
+import {
+    BsFillLightningChargeFill,
+    BsCpuFill,
+    BsCheckSquareFill,
+} from "react-icons/bs";
+import { VscDebugRestart } from "react-icons/vsc";
 import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
 const SideBar = () => {
     const [oppositeTheme, setTheme] = useDarkMode();
-    const [algorithm, setAlgorithm] = useState(null);
+    const [algorithm, setAlgorithm] = useState(0);
 
     const handleAlgoChange = (newValue) => {
         setAlgorithm(newValue);
@@ -31,18 +35,20 @@ const SideBar = () => {
                 id="algo"
                 icon={<BsCpuFill size={25} />}
                 tooltip="algorithm"
-                click={() => HandleClick("algo", handleAlgoChange)}
+                click={() => HandleDropDown("algo", handleAlgoChange)}
                 options={[
                     "A* algorithm",
                     "Dijkstra's algorithm",
                     "Depth First Search",
                     "Breadth First Search",
                 ]}
+                opt={algorithm}
             />
 
             <SideBarIcon
-                icon={<TbBarrierBlock size={25} />}
-                tooltip="add barrier"
+                icon={<VscDebugRestart size={25} />}
+                tooltip="reset board"
+                click={() => ResetBoard()}
             />
 
             <div className="separator"></div>
@@ -67,26 +73,31 @@ const SideBar = () => {
     );
 };
 
-const SideBarIcon = ({ id = "", icon, tooltip, click, options = [] }) => {
+const SideBarIcon = ({ id = "", icon, tooltip, click, options = [], opt }) => {
     return (
         <button id={id} className="sidebar-icon group" onClick={() => click()}>
             {icon}
             <span className="sidebar-tooltip group-hover:scale-100 transition-all group-active:scale-0">
                 {tooltip}
             </span>
-            {options.length !== 0 ? <Dropdown id={id} options={options} /> : ""}
+            {options.length !== 0 ? (
+                <Dropdown id={id} options={options} opt={opt} />
+            ) : (
+                ""
+            )}
         </button>
     );
 };
 
-const Dropdown = ({ id, options }) => {
+const Dropdown = ({ id, options, opt }) => {
     const option_list = [];
 
     for (let i = 0; i < options.length; i++) {
         const key = id + "-" + i;
         option_list.push(
             <li key={key} id={key}>
-                {options[i]}
+                {i.toString() === opt ? <BsCheckSquareFill /> : ""}
+                {" " + options[i]}
             </li>
         );
     }
@@ -98,7 +109,7 @@ const Dropdown = ({ id, options }) => {
     );
 };
 
-const HandleClick = (id, func) => {
+const HandleDropDown = (id, func) => {
     const dropdown = window.document.getElementById(id).lastChild;
     dropdown.classList.toggle("scale-100");
 
@@ -116,6 +127,14 @@ const HandleClick = (id, func) => {
             func(cid[cid.length - 1]);
         }
     };
+};
+
+const ResetBoard = () => {
+    const walls = Array.from(window.document.getElementsByClassName("wall"));
+
+    for (let i = 0; i < walls.length; i++) {
+        walls[i].classList.remove("wall");
+    }
 };
 
 export default SideBar;

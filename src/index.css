@@ -20,11 +20,24 @@
         @apply w-7 h-7 border-solid border-2 border-gray-200 dark:border-gray-600 p-1 align-middle items-center;
     }
 
+    .wall {
+        @apply bg-neutral-400 dark:bg-gray-500;
+    }
+
     .dropdown-menu li {
-        @apply text-left p-2 rounded-md hover:bg-secondary dark:hover:bg-secondary hover:text-white;
+        @apply flex align-bottom gap-1.5 text-left p-2 rounded-md hover:bg-secondary dark:hover:bg-secondary hover:text-white;
+    }
+
+    .disable-select {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: moz-none;
+        -ms-user-select: none;
+        user-select: none;
     }
 
     svg {
-        pointer-events: none;
+        @apply pointer-events-none;
     }
 }
