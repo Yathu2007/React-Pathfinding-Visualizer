@@ -21,6 +21,18 @@ module.exports = {
                     100: "#f2f3f5",
                 },
             },
+
+            keyframes: {
+                "wall-anim": {
+                    "0%": { transform: "scale(0)" },
+                    "50%": { transform: "scale(1.2)" },
+                    "100%": { transform: "scale(1)" },
+                },
+            },
+        },
+
+        animation: {
+            wall: "wall-anim 0.4s linear",
         },
     },
     plugins: [],
