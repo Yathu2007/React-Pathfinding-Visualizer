@@ -1,7 +1,11 @@
 import Node from "./Node";
 
+import Visualizer from "./Algorithms";
+
+var board = [];
+
 const Board = () => {
-    const board = [];
+    board = [];
 
     for (let i = 0; i < 32; i++) {
         const row = [];
@@ -20,6 +24,11 @@ const Board = () => {
             </table>
         </div>
     );
+};
+
+export const Visualize = (algoID) => {
+    const frames = Visualizer(algoID, board);
+    console.log(frames);
 };
 
 export default Board;

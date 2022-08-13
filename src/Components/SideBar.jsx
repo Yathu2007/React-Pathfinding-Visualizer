@@ -9,6 +9,8 @@ import {
 import { VscDebugRestart } from "react-icons/vsc";
 import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
+import { Visualize } from "./Board";
+
 const SideBar = () => {
     const [oppositeTheme, setTheme] = useDarkMode();
     const [algorithm, setAlgorithm] = useState(0);
@@ -29,7 +31,11 @@ const SideBar = () => {
 
             <div className="separator"></div>
 
-            <SideBarIcon icon={<FaPlay size={20} />} tooltip="play animation" />
+            <SideBarIcon
+                icon={<FaPlay size={20} />}
+                tooltip="play animation"
+                click={() => Visualize(algorithm)}
+            />
 
             <SideBarIcon
                 id="algo"
