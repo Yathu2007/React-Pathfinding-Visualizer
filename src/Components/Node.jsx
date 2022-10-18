@@ -1,37 +1,45 @@
 import { BsFlagFill } from "react-icons/bs";
 import { FaFlagCheckered } from "react-icons/fa";
 
-const Node = ({ i, j }) => {
-    const cName = "node disable-select ";
-    const k = i === 15 && j === 15 ? 1 : i === 15 && j === 47 ? 0 : null;
+const Node = ({ i, j, k, board, setBoard }) => {
+    let cName = "node disable-select ";
+    let icon = "";
+
+    const HandleWall = (e) => {
+        const classes = e.target.classList; // class names
+
+        if (
+            !classes.contains("start") &&
+            !classes.contains("end") &&
+            (e._reactName === "onClick" || e.buttons === 1)
+        ) {
+            classes.toggle("wall");
+
+            let copy = [...board];
+            copy[i][j] = 3;
+            setBoard(copy);
+        }
+    };
+
+    if (k === 1) {
+        cName += "start text-green-600";
+        icon = <BsFlagFill />;
+    } else if (k === 2) {
+        cName += "end text-red-600";
+        icon = <FaFlagCheckered />;
+    } else if (k === 4) {
+        cName += "visited";
+    }
 
     return (
         <td
             onClick={(e) => HandleWall(e)}
             onMouseEnter={(e) => HandleWall(e)}
-            className={
-                k === 1
-                    ? cName + "start text-green-600"
-                    : k === 0
-                    ? cName + "end text-red-600"
-                    : cName
-            }
+            className={cName}
         >
-            {k === 1 ? <BsFlagFill /> : k === 0 ? <FaFlagCheckered /> : ""}
+            {icon}
         </td>
     );
-};
-
-const HandleWall = (e) => {
-    const classes = e.target.classList; // class names
-
-    if (
-        !classes.contains("start") &&
-        !classes.contains("end") &&
-        (e._reactName === "onClick" || e.buttons === 1)
-    ) {
-        classes.toggle("wall");
-    }
 };
 
 export default Node;

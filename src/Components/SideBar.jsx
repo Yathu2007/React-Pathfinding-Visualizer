@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import useDarkMode from "../hooks/useDarkMode";
 
 import {
@@ -11,9 +10,8 @@ import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
 import { Visualize } from "./Board";
 
-const SideBar = () => {
+const SideBar = ({ algorithm, setAlgorithm, board, setBoard }) => {
     const [oppositeTheme, setTheme] = useDarkMode();
-    const [algorithm, setAlgorithm] = useState(0);
 
     const handleAlgoChange = (newValue) => {
         setAlgorithm(newValue);
@@ -34,7 +32,7 @@ const SideBar = () => {
             <SideBarIcon
                 icon={<FaPlay size={20} />}
                 tooltip="play animation"
-                click={() => Visualize(algorithm)}
+                click={() => Visualize(algorithm, board, setBoard)}
             />
 
             <SideBarIcon

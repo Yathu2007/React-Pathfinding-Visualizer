@@ -24,6 +24,10 @@
         @apply bg-neutral-400 dark:bg-gray-500 animate-wall;
     }
 
+    .visited {
+        @apply bg-blue-400 dark:bg-blue-700 animate-wall;
+    }
+
     .dropdown-menu li {
         @apply flex align-bottom gap-1.5 text-left p-2 rounded-md hover:bg-secondary dark:hover:bg-secondary hover:text-white;
     }
