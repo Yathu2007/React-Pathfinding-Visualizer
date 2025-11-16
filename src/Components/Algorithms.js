@@ -9,14 +9,20 @@ const aStar = (board) => {};
 
 const dijkstra = (board) => {};
 
-const dfs = (board) => {
-    const stack = [[15, 15]];
+const dfs = (board, mode = 0) => {
+    /*
+    Mode = 0  DFS  (uses stack)
+    Mode = 1  BFS  (uses queue)
+    */
+
+    const container = [[15, 15]];
     let found = false;
 
     console.log(board);
 
-    while (stack.length > 0 && found === false) {
-        let [x, y] = stack.pop();
+    while (container.length > 0 && found === false) {
+        // DFS stack (pop last element); BFS queue (pop first element)
+        let [x, y] = container.pop(mode ? 0 : container.length - 1);
 
         if (board[x][y] === 2) {
             found = true;
@@ -37,7 +43,7 @@ const dfs = (board) => {
             for (const [x2, y2] of neighbors) {
                 if (x2 >= 0 && x2 < 32 && y2 >= 0 && y2 < 64) {
                     if (board[x2][y2] !== 4) {
-                        stack.push([x2, y2]);
+                        container.push([x2, y2]);
                     }
                 }
             }
@@ -47,6 +53,8 @@ const dfs = (board) => {
     return boardStates;
 };
 
-const bfs = (board) => {};
+const bfs = (board) => {
+    return dfs(board, 1);
+};
 
 export default AlgoStates;

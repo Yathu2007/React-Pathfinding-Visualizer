@@ -21,6 +21,14 @@ const Node = ({ i, j, k, board, setBoard }) => {
         }
     };
 
+    /*
+    k = 0 unvisited node
+    k = 1 start flag
+    k = 2 end flag
+    k = 3 barrier
+    k = 4 visited node
+    */
+
     if (k === 1) {
         cName += "start text-green-600";
         icon = <BsFlagFill />;
