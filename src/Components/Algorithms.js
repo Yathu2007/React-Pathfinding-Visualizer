@@ -1,8 +1,12 @@
 var boardStates = [];
 
+const deepCopy = (board) => {
+    return JSON.parse(JSON.stringify(board));
+};
+
 const AlgoStates = (id, board) => {
     const algorithms = [aStar, dijkstra, dfs, bfs];
-    return algorithms[id](JSON.parse(JSON.stringify(board)));
+    return algorithms[id](deepCopy(board));
 };
 
 const aStar = (board) => {};
@@ -18,18 +22,20 @@ const dfs = (board, mode = 0) => {
     const container = [[15, 15]];
     let found = false;
 
-    console.log(board);
-
     while (container.length > 0 && found === false) {
+        console.log(deepCopy(container));
+
         // DFS stack (pop last element); BFS queue (pop first element)
-        let [x, y] = container.pop(mode ? 0 : container.length - 1);
+        let [x, y] = mode ? container.shift() : container.pop();
+
+        console.log(x, y);
 
         if (board[x][y] === 2) {
             found = true;
         } else if (board[x][y] === 0 || board[x][y] === 1) {
             if (board[x][y] === 0) {
                 board[x][y] = 4;
-                boardStates.push(board);
+                boardStates.push(deepCopy(board));
             }
 
             const neighbors = [
@@ -39,16 +45,21 @@ const dfs = (board, mode = 0) => {
                 [x, y + 1],
             ];
 
-            // add valid unvisited neighbors to the stack
+            // add valid unvisited neighbors to the stack/queue
             for (const [x2, y2] of neighbors) {
-                if (x2 >= 0 && x2 < 32 && y2 >= 0 && y2 < 64) {
-                    if (board[x2][y2] !== 4) {
-                        container.push([x2, y2]);
-                    }
+                if (
+                    x2 >= 0 &&
+                    x2 < 32 &&
+                    y2 >= 0 &&
+                    y2 < 64 &&
+                    board[x2][y2] !== 4
+                ) {
+                    container.push([x2, y2]);
                 }
             }
         }
     }
+
     console.log(boardStates);
     return boardStates;
 };
