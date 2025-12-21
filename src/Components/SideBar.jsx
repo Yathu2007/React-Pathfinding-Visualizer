@@ -10,7 +10,7 @@ import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
 import { Visualize } from "./Board";
 
-const SideBar = ({ algorithm, setAlgorithm, board, setBoard }) => {
+const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
     const [oppositeTheme, setTheme] = useDarkMode();
 
     const handleAlgoChange = (newValue) => {
@@ -52,7 +52,7 @@ const SideBar = ({ algorithm, setAlgorithm, board, setBoard }) => {
             <SideBarIcon
                 icon={<VscDebugRestart size={25} />}
                 tooltip="reset board"
-                click={() => ResetBoard()}
+                click={() => ResetBoard(setBoard, start, end)}
             />
 
             <div className="separator"></div>
@@ -133,12 +133,21 @@ const HandleDropDown = (id, func) => {
     };
 };
 
-const ResetBoard = () => {
+const ResetBoard = (setBoard, start, end) => {
     const walls = Array.from(window.document.getElementsByClassName("wall"));
 
     for (let i = 0; i < walls.length; i++) {
         walls[i].classList.remove("wall");
     }
+
+    let empty_board = Array.from({ length: 32 }, () =>
+        Array.from({ length: 64 }, () => 0)
+    );
+
+    empty_board[start[0]][start[1]] = 1;
+    empty_board[end[0]][end[1]] = 2;
+
+    setBoard(empty_board);
 };
 
 export default SideBar;

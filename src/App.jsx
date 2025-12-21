@@ -26,6 +26,8 @@ function App() {
                     setAlgorithm={setAlgorithm}
                     board={board}
                     setBoard={setBoard}
+                    start={start}
+                    end={end}
                 />
             </div>
         </div>
