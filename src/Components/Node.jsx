@@ -25,8 +25,9 @@ const Node = ({ i, j, k, board, setBoard }) => {
     k = 0 unvisited node
     k = 1 start flag
     k = 2 end flag
-    k = 3 barrier
+    k = 3 barrier/wall
     k = 4 visited node
+    k = 5 path reconstruction
     */
 
     if (k === 1) {
@@ -37,6 +38,8 @@ const Node = ({ i, j, k, board, setBoard }) => {
         icon = <FaFlagCheckered />;
     } else if (k === 4) {
         cName += "visited";
+    } else if (k === 5) {
+        cName += "path";
     }
 
     return (
