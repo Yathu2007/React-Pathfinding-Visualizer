@@ -13,20 +13,23 @@ const aStar = (board) => {};
 
 const dijkstra = (board) => {};
 
-const dfs = (board, mode = 0) => {
-    boardStates.length = 0;
-    /*
-    Mode = 0  DFS  (uses stack)
-    Mode = 1  BFS  (uses queue)
-    */
+const dfs = (board) => {
+    const stack = [[15, 15, null]];
+    return traverse(board, stack, (s) => s.pop());
+};
 
-    const container = [[15, 15]];
+const bfs = (board) => {
+    const queue = [[15, 15, null]];
+    return traverse(board, queue, (q) => q.shift());
+};
+
+const traverse = (board, container, popFn) => {
+    boardStates.length = 0;
     let previous_nodes = {};
     let found = false;
 
-    while (container.length > 0 && found === false) {
-        // DFS stack (pop last element); BFS queue (pop first element)
-        let [x, y, prev] = mode ? container.shift() : container.pop();
+    while (container.length > 0 && !found) {
+        let [x, y, prev] = popFn(container);
 
         if (board[x][y] === 2) {
             found = true;
@@ -62,10 +65,6 @@ const dfs = (board, mode = 0) => {
 
     boardStates.push(...path_reconstruction(previous_nodes, board));
     return boardStates;
-};
-
-const bfs = (board) => {
-    return dfs(board, 1);
 };
 
 const path_reconstruction = (previous_nodes, board) => {
