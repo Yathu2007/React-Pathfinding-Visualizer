@@ -1,5 +1,6 @@
 import { BsFlagFill } from "react-icons/bs";
 import { FaFlagCheckered } from "react-icons/fa";
+import constants from "../constants";
 
 const Node = ({ i, j, k, board, setBoard }) => {
     let cName = "node disable-select ";
@@ -21,24 +22,15 @@ const Node = ({ i, j, k, board, setBoard }) => {
         }
     };
 
-    /*
-    k = 0 unvisited node
-    k = 1 start flag
-    k = 2 end flag
-    k = 3 barrier/wall
-    k = 4 visited node
-    k = 5 path reconstruction
-    */
-
-    if (k === 1) {
+    if (k === constants.START_FLAG) {
         cName += "start text-green-600";
         icon = <BsFlagFill />;
-    } else if (k === 2) {
+    } else if (k === constants.END_FLAG) {
         cName += "end text-red-600";
         icon = <FaFlagCheckered />;
-    } else if (k === 4) {
+    } else if (k === constants.VISITED_NODE) {
         cName += "visited";
-    } else if (k === 5) {
+    } else if (k === constants.RECONSTRUCTED_PATH) {
         cName += "path";
     }
 
