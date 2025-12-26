@@ -1,4 +1,5 @@
-import constants from "../constants";
+import * as constants from "../constants";
+import PriorityQueue from "./PriorityQueue";
 
 let boardStates = [];
 
@@ -15,24 +16,28 @@ const aStar = (board) => {};
 
 const dijkstra = (board) => {
     boardStates.length = 0;
-    const previous_nodes = {};
-    const pq = [[15, 15, null]];
+    const previousNodes = {};
+    const distances = {};
+    const pq = new PriorityQueue();
+    pq.push([15, 15, null, 0]);
     let found = false;
 
-    while (pq.length > 0 && !found) {
-        let [x, y, prev] = pq;
+    while (!pq.isEmpty() && !found) {
+        console.log(pq.peek());
+        console.log(deepCopy(pq._heap));
+        let [x, y, prev, cost] = pq.pop();
 
         if (board[x][y] === constants.END_FLAG) {
             found = true;
-            previous_nodes[`${x}-${y}`] = prev;
+            previousNodes[`${x}-${y}`] = prev;
         } else if (
             board[x][y] === constants.UNVISITED_NODE ||
             board[x][y] === constants.START_FLAG
         ) {
-            if (board[x][y] === 0) {
+            if (board[x][y] === constants.UNVISITED_NODE) {
                 board[x][y] = constants.VISITED_NODE;
                 boardStates.push(deepCopy(board));
-                previous_nodes[`${x}-${y}`] = prev;
+                previousNodes[`${x}-${y}`] = prev;
             }
 
             const neighbors = [
@@ -42,7 +47,7 @@ const dijkstra = (board) => {
                 [x, y + 1],
             ];
 
-            // add valid unvisited neighbors to the stack/queue
+            // add valid unvisited neighbors to the priority queue
             for (const [x2, y2] of neighbors) {
                 if (
                     x2 >= 0 &&
@@ -52,13 +57,22 @@ const dijkstra = (board) => {
                     board[x2][y2] !== constants.WALL &&
                     board[x2][y2] !== constants.VISITED_NODE
                 ) {
-                    pq.push([x2, y2, [x, y]]);
+                    const newCost = cost + 1; // assuming uniform cost of 1
+                    const nKey = `${x2}-${y2}`;
+
+                    if (
+                        distances[nKey] === undefined ||
+                        newCost < distances[nKey]
+                    ) {
+                        distances[nKey] = newCost;
+                        pq.push([x2, y2, [x, y], newCost]);
+                    }
                 }
             }
         }
     }
-
-    boardStates.push(...path_reconstruction(previous_nodes, board));
+    console.log(previousNodes);
+    boardStates.push(...pathReconstruction(previousNodes, board));
     return boardStates;
 };
 
@@ -74,7 +88,7 @@ const bfs = (board) => {
 
 const traverse = (board, container, popFn) => {
     boardStates.length = 0;
-    const previous_nodes = {};
+    const previousNodes = {};
     let found = false;
 
     while (container.length > 0 && !found) {
@@ -82,7 +96,7 @@ const traverse = (board, container, popFn) => {
 
         if (board[x][y] === constants.END_FLAG) {
             found = true;
-            previous_nodes[`${x}-${y}`] = prev;
+            previousNodes[`${x}-${y}`] = prev;
         } else if (
             board[x][y] === constants.UNVISITED_NODE ||
             board[x][y] === constants.START_FLAG
@@ -90,7 +104,7 @@ const traverse = (board, container, popFn) => {
             if (board[x][y] === constants.UNVISITED_NODE) {
                 board[x][y] = constants.VISITED_NODE;
                 boardStates.push(deepCopy(board));
-                previous_nodes[`${x}-${y}`] = prev;
+                previousNodes[`${x}-${y}`] = prev;
             }
 
             const neighbors = [
@@ -115,22 +129,24 @@ const traverse = (board, container, popFn) => {
         }
     }
 
-    boardStates.push(...path_reconstruction(previous_nodes, board));
+    boardStates.push(...pathReconstruction(previousNodes, board));
     return boardStates;
 };
 
-const path_reconstruction = (previous_nodes, board) => {
-    let coord = previous_nodes["15-47"];
-    const path_boards = [];
+const pathReconstruction = (previousNodes, board) => {
+    let coord = previousNodes["15-47"];
+    const pathBoards = [];
+
+    console.log(previousNodes);
 
     while (`${coord[0]}-${coord[1]}` !== "15-15") {
         let [x, y] = coord;
         board[x][y] = constants.RECONSTRUCTED_PATH;
-        path_boards.push(deepCopy(board));
-        coord = previous_nodes[`${x}-${y}`];
+        pathBoards.push(deepCopy(board));
+        coord = previousNodes[`${x}-${y}`];
     }
 
-    return path_boards;
+    return pathBoards;
 };
 
 export default AlgoStates;

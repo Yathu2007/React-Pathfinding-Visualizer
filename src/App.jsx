@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./Components/SideBar";
 import Board from "./Components/Board";
+import * as constants from "./constants";
 
 function App() {
     const [board, setBoard] = useState(
@@ -12,8 +13,8 @@ function App() {
 
     useEffect(() => {
         let copy = [...board];
-        copy[start[0]][start[1]] = 1;
-        copy[end[0]][end[1]] = 2;
+        copy[start[0]][start[1]] = constants.START_FLAG;
+        copy[end[0]][end[1]] = constants.END_FLAG;
         setBoard(copy);
     }, []);
 

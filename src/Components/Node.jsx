@@ -1,6 +1,6 @@
 import { BsFlagFill } from "react-icons/bs";
 import { FaFlagCheckered } from "react-icons/fa";
-import constants from "../constants";
+import * as constants from "../constants";
 
 const Node = ({ i, j, k, board, setBoard }) => {
     let cName = "node disable-select ";
