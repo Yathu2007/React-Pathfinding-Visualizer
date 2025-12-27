@@ -1,13 +1,12 @@
 import Node from "./Node";
+import { ROWS, COLS } from "../constants";
 
 const GenerateBoard = (board, setBoard) => {
     const nodeBoard = [];
 
-    for (let i = 0; i < 32; i++) {
-        const row = [];
-
-        for (let j = 0; j < 64; j++) {
-            row.push(
+    for (let i = 0; i < ROWS; i++) {
+        for (let j = 0; j < COLS; j++) {
+            nodeBoard.push(
                 <Node
                     key={`${i}-${j}`}
                     i={i}
@@ -18,8 +17,6 @@ const GenerateBoard = (board, setBoard) => {
                 />
             );
         }
-
-        nodeBoard.push(<tr key={i}>{row}</tr>);
     }
 
     return nodeBoard;
@@ -27,10 +24,16 @@ const GenerateBoard = (board, setBoard) => {
 
 const Board = ({ board, setBoard }) => {
     return (
-        <div className="relative flex left-16 m-8 shadow-2xl">
-            <table>
-                <tbody>{GenerateBoard(board, setBoard)}</tbody>
-            </table>
+        <div className="h-fit relative flex left-16 m-8 shadow-2xl overflow-auto">
+            <div
+                className="grid-container"
+                style={{
+                    gridTemplateColumns: `repeat(${COLS}, 28px)`,
+                    gridTemplateRows: `repeat(${ROWS}, 28px)`,
+                }}
+            >
+                {GenerateBoard(board, setBoard)}
+            </div>
         </div>
     );
 };

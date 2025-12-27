@@ -3,7 +3,7 @@ import { FaFlagCheckered } from "react-icons/fa";
 import * as constants from "../constants";
 
 const Node = ({ i, j, k, board, setBoard }) => {
-    let cName = "node disable-select ";
+    let cName = "node disable-select aspect-square ";
     let icon = "";
 
     const HandleWall = (e) => {
@@ -35,13 +35,13 @@ const Node = ({ i, j, k, board, setBoard }) => {
     }
 
     return (
-        <td
+        <div
             onClick={(e) => HandleWall(e)}
             onMouseEnter={(e) => HandleWall(e)}
             className={cName}
         >
             {icon}
-        </td>
+        </div>
     );
 };
 

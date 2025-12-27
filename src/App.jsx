@@ -5,7 +5,9 @@ import * as constants from "./constants";
 
 function App() {
     const [board, setBoard] = useState(
-        Array.from({ length: 32 }, () => Array.from({ length: 64 }, () => 0))
+        Array.from({ length: constants.ROWS }, () =>
+            Array.from({ length: constants.COLS }, () => 0)
+        )
     );
     const [start, setStart] = useState([15, 15]);
     const [end, setEnd] = useState([15, 47]);
@@ -20,7 +22,7 @@ function App() {
 
     return (
         <div className="App">
-            <div className="flex min-h-screen max-h-max dark:bg-gray-800">
+            <div className="flex min-h-screen dark:bg-gray-800">
                 <Board board={board} setBoard={setBoard} />
                 <SideBar
                     algorithm={algorithm}
