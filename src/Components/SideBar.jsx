@@ -8,7 +8,7 @@ import {
 import { VscDebugRestart } from "react-icons/vsc";
 import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
 
-import { Visualize } from "./Board";
+import Visualize from "./Visualize";
 
 const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
     const [oppositeTheme, setTheme] = useDarkMode();
@@ -32,7 +32,7 @@ const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
             <SideBarIcon
                 icon={<FaPlay size={20} />}
                 tooltip="play animation"
-                click={() => Visualize(algorithm, board, setBoard)}
+                click={() => Visualize(algorithm, board, setBoard, start, end)}
             />
 
             <SideBarIcon

@@ -7,26 +7,21 @@ const deepCopy = (board) => {
     return JSON.parse(JSON.stringify(board));
 };
 
-const AlgoStates = (id, board) => {
+const AlgoStates = (id, board, start, end) => {
     const algorithms = [aStar, dijkstra, dfs, bfs];
-    return algorithms[id](deepCopy(board));
+    return algorithms[id](deepCopy(board), start, end);
 };
 
-const aStar = (board) => {
+const aStar = (board, start, end) => {
     boardStates.length = 0;
     const previousNodes = {};
     const distances = {}; // stores gCost
     const pq = new PriorityQueue();
 
-    const startX = 15;
-    const startY = 15;
-    const endX = 15;
-    const endY = 47;
+    const [endX, endY] = end;
 
     // push: x, y, prev, gCost, fCost
-    pq.push([startX, startY, null, 0, 0]);
-
-    // distances[`${startX}-${startY}`] = 0;
+    pq.push([start[0], start[1], null, 0, 0]);
 
     let found = false;
 
@@ -80,16 +75,16 @@ const aStar = (board) => {
             }
         }
     }
-    boardStates.push(...pathReconstruction(previousNodes, board));
+    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
     return boardStates;
 };
 
-const dijkstra = (board) => {
+const dijkstra = (board, start, end) => {
     boardStates.length = 0;
     const previousNodes = {};
     const distances = {};
     const pq = new PriorityQueue();
-    pq.push([15, 15, null, 0]);
+    pq.push([...start, null, 0]);
     let found = false;
 
     while (!pq.isEmpty() && !found) {
@@ -139,21 +134,21 @@ const dijkstra = (board) => {
             }
         }
     }
-    boardStates.push(...pathReconstruction(previousNodes, board));
+    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
     return boardStates;
 };
 
-const dfs = (board) => {
-    const stack = [[15, 15, null]];
-    return traverse(board, stack, (s) => s.pop());
+const dfs = (board, start, end) => {
+    const stack = [[...start, null]];
+    return traverse(board, start, end, stack, (s) => s.pop());
 };
 
-const bfs = (board) => {
-    const queue = [[15, 15, null]];
-    return traverse(board, queue, (q) => q.shift());
+const bfs = (board, start, end) => {
+    const queue = [[...start, null]];
+    return traverse(board, start, end, queue, (q) => q.shift());
 };
 
-const traverse = (board, container, popFn) => {
+const traverse = (board, start, end, container, popFn) => {
     boardStates.length = 0;
     const previousNodes = {};
     let found = false;
@@ -196,17 +191,15 @@ const traverse = (board, container, popFn) => {
         }
     }
 
-    boardStates.push(...pathReconstruction(previousNodes, board));
+    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
     return boardStates;
 };
 
-const pathReconstruction = (previousNodes, board) => {
-    let coord = previousNodes["15-47"];
+const pathReconstruction = (previousNodes, board, start, end) => {
+    let coord = previousNodes[`${end[0]}-${end[1]}`];
     const pathBoards = [];
 
-    console.log(previousNodes);
-
-    while (`${coord[0]}-${coord[1]}` !== "15-15") {
+    while (`${coord[0]}-${coord[1]}` !== `${start[0]}-${start[1]}`) {
         let [x, y] = coord;
         board[x][y] = constants.RECONSTRUCTED_PATH;
         pathBoards.push(deepCopy(board));

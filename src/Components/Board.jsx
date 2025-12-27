@@ -1,7 +1,5 @@
 import Node from "./Node";
 
-import AlgoStates from "./Algorithms";
-
 const GenerateBoard = (board, setBoard) => {
     const nodeBoard = [];
 
@@ -35,18 +33,6 @@ const Board = ({ board, setBoard }) => {
             </table>
         </div>
     );
-};
-
-export const Visualize = (algoID, board, setBoard) => {
-    const frames = AlgoStates(algoID, board);
-    Visualizer(frames, setBoard);
-};
-
-const Visualizer = async (boards, setBoard) => {
-    for (const board of boards) {
-        setBoard(board);
-        await new Promise((resolve) => setTimeout(resolve, 20));
-    }
 };
 
 export default Board;
