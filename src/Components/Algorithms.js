@@ -12,7 +12,77 @@ const AlgoStates = (id, board) => {
     return algorithms[id](deepCopy(board));
 };
 
-const aStar = (board) => {};
+const aStar = (board) => {
+    boardStates.length = 0;
+    const previousNodes = {};
+    const distances = {}; // stores gCost
+    const pq = new PriorityQueue();
+
+    const startX = 15;
+    const startY = 15;
+    const endX = 15;
+    const endY = 47;
+
+    // push: x, y, prev, gCost, fCost
+    pq.push([startX, startY, null, 0, 0]);
+
+    // distances[`${startX}-${startY}`] = 0;
+
+    let found = false;
+
+    while (!pq.isEmpty() && !found) {
+        let [x, y, prev, gCost, fCost] = pq.pop();
+
+        if (board[x][y] === constants.END_FLAG) {
+            found = true;
+            previousNodes[`${x}-${y}`] = prev;
+        } else if (
+            board[x][y] === constants.UNVISITED_NODE ||
+            board[x][y] === constants.START_FLAG
+        ) {
+            if (board[x][y] === constants.UNVISITED_NODE) {
+                board[x][y] = constants.VISITED_NODE;
+                boardStates.push(deepCopy(board));
+                previousNodes[`${x}-${y}`] = prev;
+            }
+
+            const neighbors = [
+                [x - 1, y],
+                [x + 1, y],
+                [x, y - 1],
+                [x, y + 1],
+            ];
+
+            // add valid unvisited neighbors to the priority queue
+            for (const [x2, y2] of neighbors) {
+                if (
+                    x2 >= 0 &&
+                    x2 < 32 &&
+                    y2 >= 0 &&
+                    y2 < 64 &&
+                    board[x2][y2] !== constants.WALL &&
+                    board[x2][y2] !== constants.VISITED_NODE
+                ) {
+                    const newGCost = gCost + 1; // assuming uniform cost of 1
+                    const nKey = `${x2}-${y2}`;
+
+                    if (
+                        distances[nKey] === undefined ||
+                        newGCost < distances[nKey]
+                    ) {
+                        distances[nKey] = newGCost;
+
+                        const hCost = Math.abs(x2 - endX) + Math.abs(y2 - endY);
+                        const fCost = newGCost + hCost;
+                        pq.push([x2, y2, [x, y], newGCost, fCost]);
+                    }
+                }
+            }
+        }
+    }
+    boardStates.push(...pathReconstruction(previousNodes, board));
+    return boardStates;
+};
 
 const dijkstra = (board) => {
     boardStates.length = 0;
@@ -23,8 +93,6 @@ const dijkstra = (board) => {
     let found = false;
 
     while (!pq.isEmpty() && !found) {
-        console.log(pq.peek());
-        console.log(deepCopy(pq._heap));
         let [x, y, prev, cost] = pq.pop();
 
         if (board[x][y] === constants.END_FLAG) {
@@ -71,7 +139,6 @@ const dijkstra = (board) => {
             }
         }
     }
-    console.log(previousNodes);
     boardStates.push(...pathReconstruction(previousNodes, board));
     return boardStates;
 };

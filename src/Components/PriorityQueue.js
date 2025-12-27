@@ -3,8 +3,12 @@ const parent = (i) => ((i + 1) >>> 1) - 1;
 const left = (i) => (i << 1) + 1;
 const right = (i) => (i + 1) << 1;
 
+const PRIORITY_INDEX = -1;
+
 export default class PriorityQueue {
-    constructor(comparator = (a, b) => a[3] < b[3]) {
+    constructor(
+        comparator = (a, b) => a.at(PRIORITY_INDEX) < b.at(PRIORITY_INDEX)
+    ) {
         this._heap = [];
         this._comparator = comparator;
     }
