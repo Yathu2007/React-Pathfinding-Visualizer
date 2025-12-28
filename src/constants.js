@@ -12,6 +12,7 @@ export const END_FLAG = 2;
 export const WALL = 3;
 export const VISITED_NODE = 4;
 export const RECONSTRUCTED_PATH = 5;
+export const MUD = 6;
 
 export const ROWS = 35;
 export const COLS = 64;

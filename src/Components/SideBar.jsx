@@ -1,20 +1,49 @@
 import useDarkMode from "../hooks/useDarkMode";
-
+import { useState } from "react";
 import {
     BsFillLightningChargeFill,
     BsCpuFill,
     BsCheckSquareFill,
 } from "react-icons/bs";
 import { VscDebugRestart } from "react-icons/vsc";
-import { FaPlay, FaCog, FaSun, FaMoon } from "react-icons/fa";
+import {
+    FaPlay,
+    FaCog,
+    FaSun,
+    FaMoon,
+    FaPencilAlt,
+    FaFlag,
+} from "react-icons/fa";
+import { ROWS, COLS } from "../constants";
 
 import Visualize from "./Visualize";
 
-const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
+const SideBar = ({
+    algorithm,
+    setAlgorithm,
+    board,
+    setBoard,
+    start,
+    end,
+    selectingStartEnd,
+    drawMode,
+    setDrawMode,
+}) => {
     const [oppositeTheme, setTheme] = useDarkMode();
+    const [openDropdown, setOpenDropdown] = useState(null);
 
-    const handleAlgoChange = (newValue) => {
-        setAlgorithm(newValue);
+    const handleAlgoChange = (index) => {
+        setAlgorithm(index);
+        setOpenDropdown(null);
+    };
+
+    const handleStartEndChange = (index) => {
+        console.log(index);
+        setOpenDropdown(null);
+    };
+    const handleDrawing = (index) => {
+        setDrawMode(index);
+        setOpenDropdown(null);
     };
 
     return (
@@ -35,25 +64,74 @@ const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
                 click={() => Visualize(algorithm, board, setBoard, start, end)}
             />
 
-            <SideBarIcon
-                id="algo"
-                icon={<BsCpuFill size={25} />}
-                tooltip="algorithm"
-                click={() => HandleDropDown("algo", handleAlgoChange)}
-                options={[
-                    "A* algorithm",
-                    "Dijkstra's algorithm",
-                    "Depth First Search",
-                    "Breadth First Search",
-                ]}
-                opt={algorithm}
-            />
+            <div className="relative flex justify-center">
+                <SideBarIcon
+                    id="algo"
+                    icon={<BsCpuFill size={25} />}
+                    tooltip="algorithm"
+                    click={() =>
+                        setOpenDropdown(openDropdown === "algo" ? null : "algo")
+                    }
+                />
+
+                <Dropdown
+                    open={openDropdown === "algo"}
+                    options={[
+                        "A* algorithm",
+                        "Dijkstra's algorithm",
+                        "Depth First Search",
+                        "Breadth First Search",
+                    ]}
+                    selected={algorithm}
+                    onSelect={handleAlgoChange}
+                />
+            </div>
 
             <SideBarIcon
                 icon={<VscDebugRestart size={25} />}
                 tooltip="reset board"
                 click={() => ResetBoard(setBoard, start, end)}
             />
+
+            <div className="separator"></div>
+
+            <div className="relative flex justify-center">
+                <SideBarIcon
+                    id="startEnd"
+                    icon={<FaFlag size={20} />}
+                    tooltip="select start & end positions"
+                    click={() =>
+                        setOpenDropdown(
+                            openDropdown === "startEnd" ? null : "startEnd"
+                        )
+                    }
+                />
+
+                <Dropdown
+                    open={openDropdown === "startEnd"}
+                    options={["Choose start", "Choose end"]}
+                    onSelect={handleStartEndChange}
+                />
+            </div>
+
+            <div className="relative flex justify-center">
+                <SideBarIcon
+                    id="drawing"
+                    icon={<FaPencilAlt size={20} />}
+                    tooltip="draw barriers"
+                    click={() =>
+                        setOpenDropdown(
+                            openDropdown === "drawing" ? null : "drawing"
+                        )
+                    }
+                />
+                <Dropdown
+                    open={openDropdown === "drawing"}
+                    options={["Wall (cost = ∞)", "Mud (cost = 5)"]}
+                    selected={drawMode}
+                    onSelect={handleDrawing}
+                />
+            </div>
 
             <div className="separator"></div>
 
@@ -77,71 +155,46 @@ const SideBar = ({ algorithm, setAlgorithm, board, setBoard, start, end }) => {
     );
 };
 
-const SideBarIcon = ({ id = "", icon, tooltip, click, options = [], opt }) => {
+const SideBarIcon = ({ id = "", icon, tooltip, click }) => {
     return (
         <button id={id} className="sidebar-icon group" onClick={() => click()}>
             {icon}
             <span className="sidebar-tooltip group-hover:scale-100 transition-all group-active:scale-0">
                 {tooltip}
             </span>
-            {options.length !== 0 ? (
-                <Dropdown id={id} options={options} opt={opt} />
-            ) : (
-                ""
-            )}
         </button>
     );
 };
 
-const Dropdown = ({ id, options, opt }) => {
+const Dropdown = ({ open, options, selected, onSelect }) => {
     const option_list = [];
 
     for (let i = 0; i < options.length; i++) {
-        const key = id + "-" + i;
         option_list.push(
-            <li key={key} id={key}>
-                {i.toString() === opt ? <BsCheckSquareFill /> : ""}
+            <li key={i} onClick={() => onSelect(i)} className="disable-select">
+                {i === selected && <BsCheckSquareFill />}
                 {" " + options[i]}
             </li>
         );
     }
 
     return (
-        <div className="dropdown-menu">
+        <div
+            className={`absolute left-16 top-1/2 -translate-y-1/2
+        dropdown-menu
+        transition-transform
+        origin-left
+        ${open ? "scale-100" : "scale-0"}
+      `}
+        >
             <ul>{option_list}</ul>
         </div>
     );
 };
 
-const HandleDropDown = (id, func) => {
-    const dropdown = window.document.getElementById(id).lastChild;
-    dropdown.classList.toggle("scale-100");
-
-    window.onclick = function (e) {
-        const cid = e.target.id; // clicked id
-
-        if (!e.target.matches(".dropdown-menu") && !(cid === id)) {
-            if (dropdown.classList.contains("scale-100")) {
-                dropdown.classList.remove("scale-100");
-                window.onclick = () => {};
-            }
-        }
-
-        if (cid.includes(id) && cid !== id) {
-            func(cid[cid.length - 1]);
-        }
-    };
-};
-
 const ResetBoard = (setBoard, start, end) => {
-    const walls = Array.from(window.document.getElementsByClassName("wall"));
-
-    for (let i = 0; i < walls.length; i++) {
-        walls[i].classList.remove("wall");
-    }
-
-    let empty_board = Array.from({ length: 32 }, () =>
-        Array.from({ length: 64 }, () => 0)
+    let empty_board = Array.from({ length: ROWS }, () =>
+        Array.from({ length: COLS }, () => 0)
     );
 
     empty_board[start[0]][start[1]] = 1;

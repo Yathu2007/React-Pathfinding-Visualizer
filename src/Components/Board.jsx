@@ -1,7 +1,7 @@
 import Node from "./Node";
 import { ROWS, COLS } from "../constants";
 
-const GenerateBoard = (board, setBoard) => {
+const GenerateBoard = (board, setBoard, drawMode) => {
     const nodeBoard = [];
 
     for (let i = 0; i < ROWS; i++) {
@@ -14,6 +14,7 @@ const GenerateBoard = (board, setBoard) => {
                     k={board[i][j]}
                     board={board}
                     setBoard={setBoard}
+                    drawMode={drawMode}
                 />
             );
         }
@@ -22,7 +23,7 @@ const GenerateBoard = (board, setBoard) => {
     return nodeBoard;
 };
 
-const Board = ({ board, setBoard }) => {
+const Board = ({ board, setBoard, drawMode }) => {
     return (
         <div className="h-fit relative flex left-16 m-8 shadow-2xl overflow-auto">
             <div
@@ -32,7 +33,7 @@ const Board = ({ board, setBoard }) => {
                     gridTemplateRows: `repeat(${ROWS}, 28px)`,
                 }}
             >
-                {GenerateBoard(board, setBoard)}
+                {GenerateBoard(board, setBoard, drawMode)}
             </div>
         </div>
     );

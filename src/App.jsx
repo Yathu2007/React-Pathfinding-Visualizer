@@ -13,6 +13,10 @@ function App() {
     const [end, setEnd] = useState([15, 47]);
     const [algorithm, setAlgorithm] = useState(0);
 
+    const [animationPlaying, setAnimationPlaying] = useState(false);
+    const [selectingStartEnd, setSelectingStartEnd] = useState(0);
+    const [drawMode, setDrawMode] = useState(null);
+
     useEffect(() => {
         let copy = [...board];
         copy[start[0]][start[1]] = constants.START_FLAG;
@@ -23,7 +27,7 @@ function App() {
     return (
         <div className="App">
             <div className="flex min-h-screen dark:bg-gray-800">
-                <Board board={board} setBoard={setBoard} />
+                <Board board={board} setBoard={setBoard} drawMode={drawMode} />
                 <SideBar
                     algorithm={algorithm}
                     setAlgorithm={setAlgorithm}
@@ -31,6 +35,9 @@ function App() {
                     setBoard={setBoard}
                     start={start}
                     end={end}
+                    selectingStartEnd={selectingStartEnd}
+                    drawMode={drawMode}
+                    setDrawMode={setDrawMode}
                 />
             </div>
         </div>
