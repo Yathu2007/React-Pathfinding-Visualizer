@@ -9,8 +9,6 @@ const Node = ({ i, j, k, board, setBoard, drawMode }) => {
     const HandleWall = (e) => {
         if (e.buttons !== 1 && e.type !== "click") return;
 
-        // const classes = e.target.classList; // class names
-
         setBoard((prev) => {
             const next = prev.map((row) => [...row]);
             if (drawMode === 0 && k === constants.UNVISITED_NODE) {
@@ -18,23 +16,9 @@ const Node = ({ i, j, k, board, setBoard, drawMode }) => {
             } else if (drawMode === 1 && k === constants.UNVISITED_NODE) {
                 next[i][j] = constants.MUD;
             }
-            // else if (drawMode === 0) {
-            //     next[i][j] = constants.UNVISITED_NODE;
-            // }
 
             return next;
         });
-
-        // if (
-        //     !classes.contains("start") &&
-        //     !classes.contains("end") &&
-        //     (e._reactName === "onClick" || e.buttons === 1)
-        // ) {
-        //     classes.toggle("wall");
-        //     let copy = [...board];
-        //     copy[i][j] = 3;
-        //     setBoard(copy);
-        // }
     };
 
     if (k === constants.START_FLAG) {
@@ -49,6 +33,8 @@ const Node = ({ i, j, k, board, setBoard, drawMode }) => {
         cName += "path";
     } else if (k === constants.WALL) {
         cName += "wall";
+    } else if (k === constants.MUD) {
+        cName += "mud";
     }
 
     return (

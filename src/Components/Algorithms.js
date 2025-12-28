@@ -26,56 +26,63 @@ const aStar = (board, start, end) => {
     let found = false;
 
     while (!pq.isEmpty() && !found) {
-        let [x, y, prev, gCost, fCost] = pq.pop();
+        let [x, y, prev, gCost] = pq.pop();
 
         if (board[x][y] === constants.END_FLAG) {
             found = true;
             previousNodes[`${x}-${y}`] = prev;
-        } else if (
+            break;
+        }
+
+        if (
             board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.START_FLAG
+            board[x][y] === constants.MUD
         ) {
-            if (board[x][y] === constants.UNVISITED_NODE) {
-                board[x][y] = constants.VISITED_NODE;
-                boardStates.push(deepCopy(board));
-                previousNodes[`${x}-${y}`] = prev;
-            }
+            board[x][y] = constants.VISITED_NODE;
+            boardStates.push(deepCopy(board));
+            previousNodes[`${x}-${y}`] = prev;
+        }
 
-            const neighbors = [
-                [x - 1, y],
-                [x + 1, y],
-                [x, y - 1],
-                [x, y + 1],
-            ];
+        const neighbors = [
+            [x - 1, y],
+            [x + 1, y],
+            [x, y - 1],
+            [x, y + 1],
+        ];
 
-            // add valid unvisited neighbors to the priority queue
-            for (const [x2, y2] of neighbors) {
+        // add valid unvisited neighbors to the priority queue
+        for (const [x2, y2] of neighbors) {
+            if (
+                x2 >= 0 &&
+                x2 < constants.ROWS &&
+                y2 >= 0 &&
+                y2 < constants.COLS &&
+                board[x2][y2] !== constants.WALL
+            ) {
+                const costOfCell = board[x2][y2] === constants.MUD ? 5 : 1;
+                const newGCost = gCost + costOfCell;
+                const nKey = `${x2}-${y2}`;
+
                 if (
-                    x2 >= 0 &&
-                    x2 < 32 &&
-                    y2 >= 0 &&
-                    y2 < 64 &&
-                    board[x2][y2] !== constants.WALL &&
-                    board[x2][y2] !== constants.VISITED_NODE
+                    distances[nKey] === undefined ||
+                    newGCost < distances[nKey]
                 ) {
-                    const newGCost = gCost + 1; // assuming uniform cost of 1
-                    const nKey = `${x2}-${y2}`;
+                    distances[nKey] = newGCost;
 
-                    if (
-                        distances[nKey] === undefined ||
-                        newGCost < distances[nKey]
-                    ) {
-                        distances[nKey] = newGCost;
-
-                        const hCost = Math.abs(x2 - endX) + Math.abs(y2 - endY);
-                        const fCost = newGCost + hCost;
-                        pq.push([x2, y2, [x, y], newGCost, fCost]);
-                    }
+                    const hCost = Math.abs(x2 - endX) + Math.abs(y2 - endY);
+                    const fCost = newGCost + hCost;
+                    pq.push([x2, y2, [x, y], newGCost, fCost]);
                 }
             }
         }
     }
-    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
+
+    // if not found display some error message or smth without trying path reconstruction
+    if (found)
+        boardStates.push(
+            ...pathReconstruction(previousNodes, board, start, end)
+        );
+    else console.log("Could not find a way to the end flag");
     return boardStates;
 };
 
@@ -93,48 +100,53 @@ const dijkstra = (board, start, end) => {
         if (board[x][y] === constants.END_FLAG) {
             found = true;
             previousNodes[`${x}-${y}`] = prev;
-        } else if (
+            break;
+        }
+
+        if (
             board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.START_FLAG
+            board[x][y] === constants.MUD
         ) {
-            if (board[x][y] === constants.UNVISITED_NODE) {
-                board[x][y] = constants.VISITED_NODE;
-                boardStates.push(deepCopy(board));
-                previousNodes[`${x}-${y}`] = prev;
-            }
+            board[x][y] = constants.VISITED_NODE;
+            boardStates.push(deepCopy(board));
+            previousNodes[`${x}-${y}`] = prev;
+        }
 
-            const neighbors = [
-                [x - 1, y],
-                [x + 1, y],
-                [x, y - 1],
-                [x, y + 1],
-            ];
+        const neighbors = [
+            [x - 1, y],
+            [x + 1, y],
+            [x, y - 1],
+            [x, y + 1],
+        ];
 
-            // add valid unvisited neighbors to the priority queue
-            for (const [x2, y2] of neighbors) {
+        // add valid unvisited neighbors to the priority queue
+        for (const [x2, y2] of neighbors) {
+            if (
+                x2 >= 0 &&
+                x2 < constants.ROWS &&
+                y2 >= 0 &&
+                y2 < constants.COLS &&
+                board[x2][y2] !== constants.WALL
+            ) {
+                const costOfCell = board[x2][y2] === constants.MUD ? 5 : 1;
+                const newCost = cost + costOfCell;
+                const nKey = `${x2}-${y2}`;
+
                 if (
-                    x2 >= 0 &&
-                    x2 < 32 &&
-                    y2 >= 0 &&
-                    y2 < 64 &&
-                    board[x2][y2] !== constants.WALL &&
-                    board[x2][y2] !== constants.VISITED_NODE
+                    distances[nKey] === undefined ||
+                    newCost < distances[nKey]
                 ) {
-                    const newCost = cost + 1; // assuming uniform cost of 1
-                    const nKey = `${x2}-${y2}`;
-
-                    if (
-                        distances[nKey] === undefined ||
-                        newCost < distances[nKey]
-                    ) {
-                        distances[nKey] = newCost;
-                        pq.push([x2, y2, [x, y], newCost]);
-                    }
+                    distances[nKey] = newCost;
+                    pq.push([x2, y2, [x, y], newCost]);
                 }
             }
         }
     }
-    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
+    if (found)
+        boardStates.push(
+            ...pathReconstruction(previousNodes, board, start, end)
+        );
+    else console.log("Could not find a way to the end flag");
     return boardStates;
 };
 
@@ -159,39 +171,45 @@ const traverse = (board, start, end, container, popFn) => {
         if (board[x][y] === constants.END_FLAG) {
             found = true;
             previousNodes[`${x}-${y}`] = prev;
-        } else if (
+            break;
+        }
+
+        if (
             board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.START_FLAG
+            board[x][y] === constants.MUD
         ) {
-            if (board[x][y] === constants.UNVISITED_NODE) {
-                board[x][y] = constants.VISITED_NODE;
-                boardStates.push(deepCopy(board));
-                previousNodes[`${x}-${y}`] = prev;
-            }
+            board[x][y] = constants.VISITED_NODE;
+            boardStates.push(deepCopy(board));
+            previousNodes[`${x}-${y}`] = prev;
+        }
 
-            const neighbors = [
-                [x - 1, y],
-                [x + 1, y],
-                [x, y - 1],
-                [x, y + 1],
-            ];
+        const neighbors = [
+            [x - 1, y],
+            [x + 1, y],
+            [x, y - 1],
+            [x, y + 1],
+        ];
 
-            // add valid unvisited neighbors to the stack/queue
-            for (const [x2, y2] of neighbors) {
-                if (
-                    x2 >= 0 &&
-                    x2 < 32 &&
-                    y2 >= 0 &&
-                    y2 < 64 &&
-                    board[x2][y2] !== constants.VISITED_NODE
-                ) {
-                    container.push([x2, y2, [x, y]]);
-                }
+        // add valid unvisited neighbors to the stack/queue
+        for (const [x2, y2] of neighbors) {
+            if (
+                x2 >= 0 &&
+                x2 < constants.ROWS &&
+                y2 >= 0 &&
+                y2 < constants.COLS &&
+                board[x2][y2] !== constants.WALL
+            ) {
+                container.push([x2, y2, [x, y]]);
             }
         }
     }
 
-    boardStates.push(...pathReconstruction(previousNodes, board, start, end));
+    if (found)
+        boardStates.push(
+            ...pathReconstruction(previousNodes, board, start, end)
+        );
+    else console.log("Could not find a way to the end flag");
+
     return boardStates;
 };
 

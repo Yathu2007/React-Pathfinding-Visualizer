@@ -29,6 +29,10 @@
         @apply bg-neutral-400 dark:bg-gray-500 animate-wall;
     }
 
+    .mud {
+        @apply bg-amber-200 dark:bg-yellow-700 animate-wall;
+    }
+
     .visited {
         @apply bg-blue-400 dark:bg-blue-700 animate-wall;
     }
