@@ -77,13 +77,12 @@ const aStar = (board, start, end) => {
         }
     }
 
-    // if not found display some error message or smth without trying path reconstruction
     if (found)
         boardStates.push(
             ...pathReconstruction(previousNodes, board, start, end)
         );
-    else console.log("Could not find a way to the end flag");
-    return boardStates;
+
+    return [found, boardStates];
 };
 
 const dijkstra = (board, start, end) => {
@@ -146,8 +145,8 @@ const dijkstra = (board, start, end) => {
         boardStates.push(
             ...pathReconstruction(previousNodes, board, start, end)
         );
-    else console.log("Could not find a way to the end flag");
-    return boardStates;
+
+    return [found, boardStates];
 };
 
 const dfs = (board, start, end) => {
@@ -197,9 +196,11 @@ const traverse = (board, start, end, container, popFn) => {
                 x2 < constants.ROWS &&
                 y2 >= 0 &&
                 y2 < constants.COLS &&
-                board[x2][y2] !== constants.WALL
+                board[x2][y2] !== constants.WALL &&
+                board[x2][y2] !== constants.VISITED_NODE
             ) {
                 container.push([x2, y2, [x, y]]);
+                console.log(container, x2, y2);
             }
         }
     }
@@ -208,9 +209,8 @@ const traverse = (board, start, end, container, popFn) => {
         boardStates.push(
             ...pathReconstruction(previousNodes, board, start, end)
         );
-    else console.log("Could not find a way to the end flag");
 
-    return boardStates;
+    return [found, boardStates];
 };
 
 const pathReconstruction = (previousNodes, board, start, end) => {

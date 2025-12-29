@@ -1,8 +1,9 @@
 import AlgoStates from "./Algorithms";
 
-const Visualize = (algoID, board, setBoard, start, end) => {
-    const frames = AlgoStates(algoID, board, start, end);
-    Visualizer(frames, setBoard);
+const Visualize = (algoID, board, setBoard, start, end, setAlert) => {
+    const [found, frames] = AlgoStates(algoID, board, start, end);
+    if (found) Visualizer(frames, setBoard);
+    else setAlert("There is no valid path between start and end.");
 };
 
 const Visualizer = async (boards, setBoard) => {

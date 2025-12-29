@@ -28,6 +28,7 @@ const SideBar = ({
     selectingStartEnd,
     drawMode,
     setDrawMode,
+    setAlert,
 }) => {
     const [oppositeTheme, setTheme] = useDarkMode();
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -61,7 +62,9 @@ const SideBar = ({
             <SideBarIcon
                 icon={<FaPlay size={20} />}
                 tooltip="play animation"
-                click={() => Visualize(algorithm, board, setBoard, start, end)}
+                click={() =>
+                    Visualize(algorithm, board, setBoard, start, end, setAlert)
+                }
             />
 
             <div className="relative flex justify-center">

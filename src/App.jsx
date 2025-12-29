@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import SideBar from "./Components/SideBar";
 import Board from "./Components/Board";
+import Alert from "./Components/Alert";
 import * as constants from "./constants";
 
 function App() {
     const [board, setBoard] = useState(
         Array.from({ length: constants.ROWS }, () =>
-            Array.from({ length: constants.COLS }, () => 0)
+            Array.from(
+                { length: constants.COLS },
+                () => constants.UNVISITED_NODE
+            )
         )
     );
     const [start, setStart] = useState([15, 15]);
@@ -17,6 +21,8 @@ function App() {
     const [selectingStartEnd, setSelectingStartEnd] = useState(0);
     const [drawMode, setDrawMode] = useState(null);
 
+    const [alert, setAlert] = useState(null);
+
     useEffect(() => {
         let copy = [...board];
         copy[start[0]][start[1]] = constants.START_FLAG;
@@ -26,6 +32,7 @@ function App() {
 
     return (
         <div className="App">
+            <Alert content={alert} onClose={() => setAlert(null)} />
             <div className="flex min-h-screen dark:bg-gray-800">
                 <Board board={board} setBoard={setBoard} drawMode={drawMode} />
                 <SideBar
@@ -38,6 +45,7 @@ function App() {
                     selectingStartEnd={selectingStartEnd}
                     drawMode={drawMode}
                     setDrawMode={setDrawMode}
+                    setAlert={setAlert}
                 />
             </div>
         </div>
