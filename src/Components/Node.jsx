@@ -1,8 +1,9 @@
-import { BsFlagFill } from "react-icons/bs";
-import { FaFlagCheckered } from "react-icons/fa";
+import { FaFlag, FaFlagCheckered } from "react-icons/fa";
 import * as constants from "../constants";
+import { useBoard } from "../context/BoardContext";
 
-const Node = ({ i, j, k, board, setBoard, drawMode }) => {
+const Node = ({ i, j, k }) => {
+    const { board, setBoard, drawMode, placementMode } = useBoard();
     let cName = "node disable-select aspect-square ";
     let icon = "";
 
@@ -23,7 +24,7 @@ const Node = ({ i, j, k, board, setBoard, drawMode }) => {
 
     if (k === constants.START_FLAG) {
         cName += "start text-green-600";
-        icon = <BsFlagFill />;
+        icon = <FaFlag />;
     } else if (k === constants.END_FLAG) {
         cName += "end text-red-600";
         icon = <FaFlagCheckered />;

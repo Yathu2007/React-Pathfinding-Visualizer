@@ -12,24 +12,28 @@ import {
     FaSun,
     FaMoon,
     FaPencilAlt,
+    FaFlagCheckered,
     FaFlag,
 } from "react-icons/fa";
 import { ROWS, COLS } from "../constants";
-
 import Visualize from "./Visualize";
+import { useBoard } from "../context/BoardContext";
 
-const SideBar = ({
-    algorithm,
-    setAlgorithm,
-    board,
-    setBoard,
-    start,
-    end,
-    selectingStartEnd,
-    drawMode,
-    setDrawMode,
-    setAlert,
-}) => {
+const SideBar = () => {
+    const {
+        algorithm,
+        setAlgorithm,
+        board,
+        setBoard,
+        start,
+        end,
+        placementMode,
+        setPlacementMode,
+        drawMode,
+        setDrawMode,
+        setAlert,
+    } = useBoard();
+
     const [oppositeTheme, setTheme] = useDarkMode();
     const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -38,10 +42,6 @@ const SideBar = ({
         setOpenDropdown(null);
     };
 
-    const handleStartEndChange = (index) => {
-        console.log(index);
-        setOpenDropdown(null);
-    };
     const handleDrawing = (index) => {
         setDrawMode(index);
         setOpenDropdown(null);
@@ -98,24 +98,21 @@ const SideBar = ({
 
             <div className="separator"></div>
 
-            <div className="relative flex justify-center">
-                <SideBarIcon
-                    id="startEnd"
-                    icon={<FaFlag size={20} />}
-                    tooltip="select start & end positions"
-                    click={() =>
-                        setOpenDropdown(
-                            openDropdown === "startEnd" ? null : "startEnd"
-                        )
-                    }
-                />
+            <SideBarIcon
+                id="selectStart"
+                icon={<FaFlag size={20} />}
+                tooltip="select start"
+                active={placementMode === "START"}
+                click={() => setPlacementMode("START")}
+            />
 
-                <Dropdown
-                    open={openDropdown === "startEnd"}
-                    options={["Choose start", "Choose end"]}
-                    onSelect={handleStartEndChange}
-                />
-            </div>
+            <SideBarIcon
+                id="selectEnd"
+                icon={<FaFlagCheckered size={20} />}
+                tooltip="select end"
+                active={placementMode === "END"}
+                click={() => setPlacementMode("END")}
+            />
 
             <div className="relative flex justify-center">
                 <SideBarIcon
@@ -158,9 +155,15 @@ const SideBar = ({
     );
 };
 
-const SideBarIcon = ({ id = "", icon, tooltip, click }) => {
+const SideBarIcon = ({ id = "", icon, tooltip, click, active = false }) => {
     return (
-        <button id={id} className="sidebar-icon group" onClick={() => click()}>
+        <button
+            id={id}
+            className={`sidebar-icon group ${
+                active ? "dark:bg-secondary text-white scale-110" : ""
+            }`}
+            onClick={() => click()}
+        >
             {icon}
             <span className="sidebar-tooltip group-hover:scale-100 transition-all group-active:scale-0">
                 {tooltip}

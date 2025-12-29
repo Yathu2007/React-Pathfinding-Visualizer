@@ -1,10 +1,13 @@
 import { IoMdCloseCircleOutline } from "react-icons/io";
+import { useBoard } from "../context/BoardContext";
 
-const Alert = ({ content, onClose }) => {
+const Alert = () => {
+    const { alert, setAlert } = useBoard();
+
     return (
         <div
             className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all translate-y-0 ${
-                content !== null ? "scale-100" : "scale-0"
+                alert !== null ? "scale-100" : "scale-0"
             }`}
         >
             <div
@@ -13,9 +16,12 @@ const Alert = ({ content, onClose }) => {
             >
                 <strong className="font-bold">No path found</strong>
 
-                <span className="text-sm">{content}</span>
+                <span className="text-sm">{alert}</span>
 
-                <button onClick={onClose} className="ml-2 hover:text-red-900">
+                <button
+                    onClick={() => setAlert(null)}
+                    className="ml-2 hover:text-red-900"
+                >
                     <IoMdCloseCircleOutline size={20} />
                 </button>
             </div>
