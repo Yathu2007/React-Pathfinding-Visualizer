@@ -3,7 +3,16 @@ import * as constants from "../constants";
 import { useBoard } from "../context/BoardContext";
 
 const Node = ({ i, j, k }) => {
-    const { board, setBoard, drawMode, placementMode } = useBoard();
+    const {
+        setBoard,
+        drawMode,
+        placementMode,
+        setPlacementMode,
+        start,
+        setStart,
+        end,
+        setEnd,
+    } = useBoard();
     let cName = "node disable-select aspect-square ";
     let icon = "";
 
@@ -12,10 +21,25 @@ const Node = ({ i, j, k }) => {
 
         setBoard((prev) => {
             const next = prev.map((row) => [...row]);
-            if (drawMode === 0 && k === constants.UNVISITED_NODE) {
-                next[i][j] = constants.WALL;
-            } else if (drawMode === 1 && k === constants.UNVISITED_NODE) {
-                next[i][j] = constants.MUD;
+
+            if (placementMode === "START") {
+                const [sx, sy] = start;
+                next[sx][sy] = constants.UNVISITED_NODE;
+                next[i][j] = constants.START_FLAG;
+                setStart([i, j]);
+                setPlacementMode(null);
+            } else if (placementMode === "END") {
+                const [ex, ey] = end;
+                next[ex][ey] = constants.UNVISITED_NODE;
+                next[i][j] = constants.END_FLAG;
+                setEnd([i, j]);
+                setPlacementMode(null);
+            } else {
+                if (drawMode === 0 && k === constants.UNVISITED_NODE) {
+                    next[i][j] = constants.WALL;
+                } else if (drawMode === 1 && k === constants.UNVISITED_NODE) {
+                    next[i][j] = constants.MUD;
+                }
             }
 
             return next;
@@ -37,6 +61,9 @@ const Node = ({ i, j, k }) => {
     } else if (k === constants.MUD) {
         cName += "mud";
     }
+
+    if (placementMode !== null) cName += " cursor-crosshair";
+    else cName += " cursor-default";
 
     return (
         <div
