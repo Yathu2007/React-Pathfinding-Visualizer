@@ -16,11 +16,13 @@ const Node = ({ i, j, cell }) => {
         setStart,
         end,
         setEnd,
+        animationPlaying,
     } = useBoard();
     let cName = ["node disable-select aspect-square"];
     let icon = "";
 
     const HandleWall = (e) => {
+        if (animationPlaying) return;
         if (e.buttons !== 1 && e.type !== "click") return;
 
         setBoard((prev) => {

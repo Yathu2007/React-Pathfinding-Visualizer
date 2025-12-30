@@ -32,6 +32,8 @@ const SideBar = () => {
         drawMode,
         setDrawMode,
         setAlert,
+        animationPlaying,
+        setAnimationPlaying,
     } = useBoard();
 
     const [oppositeTheme, setTheme] = useDarkMode();
@@ -47,9 +49,22 @@ const SideBar = () => {
         setOpenDropdown(null);
     };
 
+    const handleRun = () => {
+        if (animationPlaying) return;
+        Visualize(
+            algorithm,
+            board,
+            setBoard,
+            start,
+            end,
+            setAlert,
+            setAnimationPlaying
+        );
+    };
+
     return (
         // top part
-        <div className="fixed top-0 left-0 h-screen w-16 flex flex-col text-white m-0 bg-slate-100  dark:bg-primary drop-shadow-xl items-center">
+        <div className="fixed top-0 left-0 h-screen w-16 flex flex-col text-white m-0 bg-slate-100 dark:bg-primary drop-shadow-xl items-center">
             <div className="flex justify-start">
                 <SideBarIcon
                     icon={<BsFillLightningChargeFill size={25} />}
@@ -62,9 +77,7 @@ const SideBar = () => {
             <SideBarIcon
                 icon={<FaPlay size={20} />}
                 tooltip="play animation"
-                click={() =>
-                    Visualize(algorithm, board, setBoard, start, end, setAlert)
-                }
+                click={() => handleRun()}
             />
 
             <div className="relative flex justify-center">
@@ -156,11 +169,18 @@ const SideBar = () => {
 };
 
 const SideBarIcon = ({ id = "", icon, tooltip, click, active = false }) => {
+    const { animationPlaying } = useBoard();
+
     return (
         <button
+            disabled={animationPlaying}
             id={id}
             className={`sidebar-icon group ${
                 active ? "dark:bg-secondary text-white scale-110" : ""
+            } ${
+                animationPlaying
+                    ? "opacity-40 cursor-not-allowed"
+                    : "hover:bg-gray-200"
             }`}
             onClick={() => click()}
         >
