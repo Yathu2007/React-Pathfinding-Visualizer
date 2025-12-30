@@ -8,13 +8,13 @@ import {
 import { VscDebugRestart } from "react-icons/vsc";
 import {
     FaPlay,
-    FaCog,
     FaSun,
     FaMoon,
     FaPencilAlt,
     FaFlagCheckered,
     FaFlag,
 } from "react-icons/fa";
+import { IoIosHelpCircle } from "react-icons/io";
 import * as constants from "../constants";
 import Visualize from "./Visualize";
 import { useBoard } from "../context/BoardContext";
@@ -162,7 +162,16 @@ const SideBar = () => {
                     tooltip="theme"
                     click={() => setTheme(oppositeTheme)}
                 />
-                <SideBarIcon icon={<FaCog size={20} />} tooltip="settings" />
+                <SideBarIcon
+                    icon={<IoIosHelpCircle size={30} />}
+                    tooltip="help"
+                    click={() => {
+                        window.open(
+                            "https://github.com/Yathu2007/React-Pathfinding-Visualizer/blob/main/README.md",
+                            "_blank"
+                        );
+                    }}
+                />
             </div>
         </div>
     );
