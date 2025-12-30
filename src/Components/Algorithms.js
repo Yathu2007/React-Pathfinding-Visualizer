@@ -7,6 +7,8 @@ const deepCopy = (board) => {
     return JSON.parse(JSON.stringify(board));
 };
 
+const key = (x, y) => `${x}-${y}`;
+
 const AlgoStates = (id, board, start, end) => {
     const algorithms = [aStar, dijkstra, dfs, bfs];
     return algorithms[id](deepCopy(board), start, end);
@@ -21,26 +23,24 @@ const aStar = (board, start, end) => {
     const [endX, endY] = end;
 
     // push: x, y, prev, gCost, fCost
-    pq.push([start[0], start[1], null, 0, 0]);
+    pq.push([...start, null, 0, 0]);
 
     let found = false;
 
     while (!pq.isEmpty() && !found) {
         let [x, y, prev, gCost] = pq.pop();
+        let cell = board[x][y];
 
-        if (board[x][y] === constants.END_FLAG) {
+        if (cell.role === constants.ROLE.END) {
             found = true;
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
             break;
         }
 
-        if (
-            board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.MUD
-        ) {
-            board[x][y] = constants.VISITED_NODE;
+        if (cell.role !== constants.ROLE.START) {
+            cell.state = constants.NODE_STATE.VISITED;
             boardStates.push(deepCopy(board));
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
         }
 
         const neighbors = [
@@ -57,11 +57,12 @@ const aStar = (board, start, end) => {
                 x2 < constants.ROWS &&
                 y2 >= 0 &&
                 y2 < constants.COLS &&
-                board[x2][y2] !== constants.WALL
+                board[x2][y2].terrain !== constants.TERRAIN.WALL
             ) {
-                const costOfCell = board[x2][y2] === constants.MUD ? 5 : 1;
+                const costOfCell =
+                    board[x2][y2].terrain === constants.TERRAIN.MUD ? 5 : 1;
                 const newGCost = gCost + costOfCell;
-                const nKey = `${x2}-${y2}`;
+                const nKey = key(x2, y2);
 
                 if (
                     distances[nKey] === undefined ||
@@ -95,20 +96,18 @@ const dijkstra = (board, start, end) => {
 
     while (!pq.isEmpty() && !found) {
         let [x, y, prev, cost] = pq.pop();
+        let cell = board[x][y];
 
-        if (board[x][y] === constants.END_FLAG) {
+        if (cell.role === constants.ROLE.END) {
             found = true;
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
             break;
         }
 
-        if (
-            board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.MUD
-        ) {
-            board[x][y] = constants.VISITED_NODE;
+        if (cell.role !== constants.ROLE.START) {
+            cell.state = constants.NODE_STATE.VISITED;
             boardStates.push(deepCopy(board));
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
         }
 
         const neighbors = [
@@ -125,11 +124,12 @@ const dijkstra = (board, start, end) => {
                 x2 < constants.ROWS &&
                 y2 >= 0 &&
                 y2 < constants.COLS &&
-                board[x2][y2] !== constants.WALL
+                board[x2][y2].terrain !== constants.TERRAIN.WALL
             ) {
-                const costOfCell = board[x2][y2] === constants.MUD ? 5 : 1;
+                const costOfCell =
+                    board[x2][y2].terrain === constants.TERRAIN.MUD ? 5 : 1;
                 const newCost = cost + costOfCell;
-                const nKey = `${x2}-${y2}`;
+                const nKey = key(x2, y2);
 
                 if (
                     distances[nKey] === undefined ||
@@ -166,20 +166,20 @@ const traverse = (board, start, end, container, popFn) => {
 
     while (container.length > 0 && !found) {
         let [x, y, prev] = popFn(container);
+        let cell = board[x][y];
 
-        if (board[x][y] === constants.END_FLAG) {
+        if (cell.state === constants.NODE_STATE.VISITED) continue;
+
+        if (cell.role === constants.ROLE.END) {
             found = true;
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
             break;
         }
 
-        if (
-            board[x][y] === constants.UNVISITED_NODE ||
-            board[x][y] === constants.MUD
-        ) {
-            board[x][y] = constants.VISITED_NODE;
+        if (cell.role !== constants.ROLE.START) {
+            cell.state = constants.NODE_STATE.VISITED;
             boardStates.push(deepCopy(board));
-            previousNodes[`${x}-${y}`] = prev;
+            previousNodes[key(x, y)] = prev;
         }
 
         const neighbors = [
@@ -196,11 +196,10 @@ const traverse = (board, start, end, container, popFn) => {
                 x2 < constants.ROWS &&
                 y2 >= 0 &&
                 y2 < constants.COLS &&
-                board[x2][y2] !== constants.WALL &&
-                board[x2][y2] !== constants.VISITED_NODE
+                board[x2][y2].terrain !== constants.TERRAIN.WALL &&
+                board[x2][y2].state !== constants.NODE_STATE.VISITED
             ) {
                 container.push([x2, y2, [x, y]]);
-                console.log(container, x2, y2);
             }
         }
     }
@@ -214,14 +213,14 @@ const traverse = (board, start, end, container, popFn) => {
 };
 
 const pathReconstruction = (previousNodes, board, start, end) => {
-    let coord = previousNodes[`${end[0]}-${end[1]}`];
+    let coord = previousNodes[key(...end)];
     const pathBoards = [];
 
-    while (`${coord[0]}-${coord[1]}` !== `${start[0]}-${start[1]}`) {
+    while (key(...coord) !== key(...start)) {
         let [x, y] = coord;
-        board[x][y] = constants.RECONSTRUCTED_PATH;
+        board[x][y].state = constants.NODE_STATE.PATH;
         pathBoards.push(deepCopy(board));
-        coord = previousNodes[`${x}-${y}`];
+        coord = previousNodes[key(x, y)];
     }
 
     return pathBoards;

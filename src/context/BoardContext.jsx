@@ -1,15 +1,20 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import * as constants from "../constants";
 
+const deepCopy = (board) => {
+    return JSON.parse(JSON.stringify(board));
+};
+
 const BoardContext = createContext(null);
 
 export const BoardProvider = ({ children }) => {
     const [board, setBoard] = useState(
         Array.from({ length: constants.ROWS }, () =>
-            Array.from(
-                { length: constants.COLS },
-                () => constants.UNVISITED_NODE
-            )
+            Array.from({ length: constants.COLS }, () => ({
+                terrain: constants.TERRAIN.EMPTY,
+                role: constants.ROLE.NONE,
+                state: constants.NODE_STATE.UNVISITED,
+            }))
         )
     );
     const [start, setStart] = useState([15, 15]);
@@ -21,9 +26,9 @@ export const BoardProvider = ({ children }) => {
     const [animationPlaying, setAnimationPlaying] = useState(false);
 
     useEffect(() => {
-        let copy = board.map((row) => [...row]);
-        copy[start[0]][start[1]] = constants.START_FLAG;
-        copy[end[0]][end[1]] = constants.END_FLAG;
+        let copy = deepCopy(board);
+        copy[start[0]][start[1]].role = constants.ROLE.START;
+        copy[end[0]][end[1]].role = constants.ROLE.END;
         setBoard(copy);
     }, []);
 

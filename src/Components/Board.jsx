@@ -9,7 +9,7 @@ const GenerateBoard = () => {
     for (let i = 0; i < ROWS; i++) {
         for (let j = 0; j < COLS; j++) {
             nodeBoard.push(
-                <Node key={`${i}-${j}`} i={i} j={j} k={board[i][j]} />
+                <Node key={`${i}-${j}`} i={i} j={j} cell={board[i][j]} />
             );
         }
     }

@@ -2,7 +2,11 @@ import { FaFlag, FaFlagCheckered } from "react-icons/fa";
 import * as constants from "../constants";
 import { useBoard } from "../context/BoardContext";
 
-const Node = ({ i, j, k }) => {
+const deepCopy = (board) => {
+    return JSON.parse(JSON.stringify(board));
+};
+
+const Node = ({ i, j, cell }) => {
     const {
         setBoard,
         drawMode,
@@ -13,32 +17,38 @@ const Node = ({ i, j, k }) => {
         end,
         setEnd,
     } = useBoard();
-    let cName = "node disable-select aspect-square ";
+    let cName = ["node disable-select aspect-square"];
     let icon = "";
 
     const HandleWall = (e) => {
         if (e.buttons !== 1 && e.type !== "click") return;
 
         setBoard((prev) => {
-            const next = prev.map((row) => [...row]);
+            const next = deepCopy(prev);
 
             if (placementMode === "START") {
                 const [sx, sy] = start;
-                next[sx][sy] = constants.UNVISITED_NODE;
-                next[i][j] = constants.START_FLAG;
+                next[sx][sy].role = constants.ROLE.NONE;
+                next[i][j].role = constants.ROLE.START;
                 setStart([i, j]);
                 setPlacementMode(null);
             } else if (placementMode === "END") {
                 const [ex, ey] = end;
-                next[ex][ey] = constants.UNVISITED_NODE;
-                next[i][j] = constants.END_FLAG;
+                next[ex][ey].role = constants.ROLE.NONE;
+                next[i][j].role = constants.ROLE.END;
                 setEnd([i, j]);
                 setPlacementMode(null);
             } else {
-                if (drawMode === 0 && k === constants.UNVISITED_NODE) {
-                    next[i][j] = constants.WALL;
-                } else if (drawMode === 1 && k === constants.UNVISITED_NODE) {
-                    next[i][j] = constants.MUD;
+                if (
+                    drawMode === 0 &&
+                    cell.terrain === constants.TERRAIN.EMPTY
+                ) {
+                    next[i][j].terrain = constants.TERRAIN.WALL;
+                } else if (
+                    drawMode === 1 &&
+                    cell.terrain === constants.TERRAIN.EMPTY
+                ) {
+                    next[i][j].terrain = constants.TERRAIN.MUD;
                 }
             }
 
@@ -46,30 +56,30 @@ const Node = ({ i, j, k }) => {
         });
     };
 
-    if (k === constants.START_FLAG) {
-        cName += "start text-green-600";
+    if (cell.terrain === constants.TERRAIN.WALL) cName.push("wall");
+    if (cell.terrain === constants.TERRAIN.MUD) cName.push("mud");
+
+    if (cell.state === constants.NODE_STATE.VISITED) cName.push("visited");
+    if (cell.state === constants.NODE_STATE.PATH) cName.push("path");
+
+    if (cell.role === constants.ROLE.START) {
+        cName.push("start text-green-600");
         icon = <FaFlag />;
-    } else if (k === constants.END_FLAG) {
-        cName += "end text-red-600";
-        icon = <FaFlagCheckered />;
-    } else if (k === constants.VISITED_NODE) {
-        cName += "visited";
-    } else if (k === constants.RECONSTRUCTED_PATH) {
-        cName += "path";
-    } else if (k === constants.WALL) {
-        cName += "wall";
-    } else if (k === constants.MUD) {
-        cName += "mud";
     }
 
-    if (placementMode !== null) cName += " cursor-crosshair";
-    else cName += " cursor-default";
+    if (cell.role === constants.ROLE.END) {
+        cName.push("end text-red-600");
+        icon = <FaFlagCheckered />;
+    }
+
+    if (placementMode !== null) cName.push("cursor-crosshair");
+    else cName.push("cursor-default");
 
     return (
         <div
             onClick={(e) => HandleWall(e)}
             onMouseEnter={(e) => HandleWall(e)}
-            className={cName}
+            className={cName.join(" ")}
         >
             {icon}
         </div>

@@ -15,7 +15,7 @@ import {
     FaFlagCheckered,
     FaFlag,
 } from "react-icons/fa";
-import { ROWS, COLS } from "../constants";
+import * as constants from "../constants";
 import Visualize from "./Visualize";
 import { useBoard } from "../context/BoardContext";
 
@@ -199,12 +199,16 @@ const Dropdown = ({ open, options, selected, onSelect }) => {
 };
 
 const ResetBoard = (setBoard, start, end) => {
-    let empty_board = Array.from({ length: ROWS }, () =>
-        Array.from({ length: COLS }, () => 0)
+    let empty_board = Array.from({ length: constants.ROWS }, () =>
+        Array.from({ length: constants.COLS }, () => ({
+            terrain: constants.TERRAIN.EMPTY,
+            role: constants.ROLE.NONE,
+            state: constants.NODE_STATE.UNVISITED,
+        }))
     );
 
-    empty_board[start[0]][start[1]] = 1;
-    empty_board[end[0]][end[1]] = 2;
+    empty_board[start[0]][start[1]].role = constants.ROLE.START;
+    empty_board[end[0]][end[1]].role = constants.ROLE.END;
 
     setBoard(empty_board);
 };
