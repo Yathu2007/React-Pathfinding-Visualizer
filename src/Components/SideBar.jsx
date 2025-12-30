@@ -186,11 +186,7 @@ const SideBarIcon = ({ id = "", icon, tooltip, click, active = false }) => {
             id={id}
             className={`sidebar-icon group ${
                 active ? "dark:bg-secondary text-white scale-110" : ""
-            } ${
-                animationPlaying
-                    ? "opacity-40 cursor-not-allowed"
-                    : "hover:bg-gray-200"
-            }`}
+            } ${animationPlaying ? "opacity-40 cursor-not-allowed" : ""}`}
             onClick={() => click()}
         >
             {icon}
