@@ -19,6 +19,12 @@ This project is an interactive web application that visualizes how classic pathf
 
 The goal of this project is to **build intuition** around algorithm behavior (exploration order, optimality, and performance) using step-by-step animations
 
+## Preview
+
+<p align="center" width="100%">
+    <img width=700px src="imgs/Animation.gif">
+</p>
+
 ## Pathfinding Algorithms
 
 | Algorithm | Supports Weights | Optimal              | Notes                                                 |
